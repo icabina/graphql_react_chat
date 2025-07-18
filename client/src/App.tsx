@@ -1,11 +1,12 @@
+import Products from "./components/Products";
 import Chat from "./components/Chat";
 import "./App.css";
 
 function App() {
   return (
     <div>
-      <h1>React + Apollo Chat</h1>
-      <Chat />
+      <h1>Products</h1>
+      <Products />
     </div>
   );
 }
