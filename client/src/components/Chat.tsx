@@ -1,18 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useSubscription } from "@apollo/client";
-import { GET_MESSAGES } from "../graphql/queries/getMessages";
-import { SEND_MESSAGE } from "../graphql/mutations/sendMessage";
-import { MESSAGE_ADDED } from "../graphql/subscriptions/messageAdded";
+import { gql } from "@apollo/client";
 
+const SEND_MESSAGE = gql`
+  mutation SendMessage($content: String!) {
+    sendMessage(content: $content) {
+      id
+      content
+    }
+  }
+`;
+
+const GET_MESSAGES = gql`
+  query {
+    messages {
+      id
+      content
+    }
+  }
+`;
+
+const MESSAGE_ADDED = gql`
+  subscription {
+    messageAdded {
+      id
+      content
+    }
+  }
+`;
+
+//-----------------------------------------------------------
 const Chat = () => {
   const { data } = useQuery(GET_MESSAGES);
   const [sendMessage] = useMutation(SEND_MESSAGE);
   const { data: subData } = useSubscription(MESSAGE_ADDED);
   const [content, setContent] = useState("");
+  const [messages, setMessages] = useState<{ id: string; content: string }[]>(
+    [],
+  );
 
-  const allMessages = subData
-    ? [...(data?.messages || []), subData.messageAdded]
-    : data?.messages || [];
+  // Load initial messages once
+  useEffect(() => {
+    if (data?.messages) {
+      setMessages(data.messages);
+    }
+  }, [data]);
+
+  // When a new message is received via subscription
+  useEffect(() => {
+    if (subData?.messageAdded) {
+      setMessages((prev) => [...prev, subData.messageAdded]);
+    }
+  }, [subData]);
 
   const handleSend = async () => {
     if (!content.trim()) return;
@@ -30,7 +69,7 @@ const Chat = () => {
           marginBottom: "1rem",
         }}
       >
-        {allMessages.map((msg: any) => (
+        {messages.map((msg) => (
           <div key={msg.id}>{msg.content}</div>
         ))}
       </div>

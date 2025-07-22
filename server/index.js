@@ -10,6 +10,7 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import gql from "graphql-tag";
 import { PubSub } from "graphql-subscriptions";
+import { execute, subscribe } from "graphql";
 
 const typeDefs = gql`
   type Message {
@@ -48,7 +49,10 @@ const resolvers = {
   },
   Subscription: {
     messageAdded: {
-      subscribe: () => pubsub.asyncIterator(MESSAGE_ADDED),
+      subscribe: (_, __, { pubsub }) => {
+        console.log("Someone subscribed!");
+        pubsub.asyncIterator(MESSAGE_ADDED);
+      },
     },
   },
 };
@@ -63,7 +67,24 @@ const wsServer = new WebSocketServer({
   server: httpServer,
   path: "/graphql",
 });
-useServer({ schema }, wsServer);
+useServer(
+  {
+    schema,
+    execute,
+    subscribe,
+    context: async (ctx, msg, args) => {
+      console.log("WebSocket context connected");
+      return { pubsub };
+    },
+    onConnect: (ctx) => {
+      console.log("Client connected to WebSocket");
+    },
+    onSubscribe: (ctx, msg) => {
+      console.log("Client subscribed to", msg.payload.query);
+    },
+  },
+  wsServer,
+);
 
 const apolloServer = new ApolloServer({ schema });
 

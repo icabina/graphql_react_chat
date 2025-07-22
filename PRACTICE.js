@@ -142,7 +142,7 @@ export const MESSAGE_ADDED = gql`
 
 // --------------------------------------------------------------------
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useSubscription } from "@apollo/client";
 import { GET_MESSAGES } from "../graphql/queries/getMessages";
 import { SEND_MESSAGE } from "../graphql/mutations/sendMessage";
@@ -153,30 +153,52 @@ const Chat = () => {
   const [sendMessage] = useMutation(SEND_MESSAGE);
   const { data: subData } = useSubscription(MESSAGE_ADDED);
   const [content, setContent] = useState("");
+  const [messages, setMessages] = useState<{ id: string; content: string }[]>(
+    []
+  );
 
-  const allMessages = subData
-    ? [...(data?.messages || []), subData.messageAdded]
-    : data?.messages || [];
+  // Load initial messages once
+  useEffect(() => {
+    if (data?.messages) {
+      setMessages(data.messages);
+    }
+  }, [data]);
+
+  // When a new message is received via subscription
+  useEffect(() => {
+    if (subData?.messageAdded) {
+      setMessages((prev) => [...prev, subData.messageAdded]);
+    }
+  }, [subData]);
 
   const handleSend = async () => {
     if (!content.trim()) return;
-    await sendMessage({
-      variables: { content },
-    });
+    await sendMessage({ variables: { content } });
     setContent("");
   };
 
   return (
-    <div>
-      <div>
-        {allMessages.mag((msg: {id: Number content: string}) => (
+    <div style={{ padding: "1rem" }}>
+      <div
+        style={{
+          height: "300px",
+          overflowY: "auto",
+          border: "1px solid gray",
+          marginBottom: "1rem",
+        }}
+      >
+        {messages.map((msg) => (
           <div key={msg.id}>{msg.content}</div>
         ))}
-
-        <input value={content} onChange={(e) => setContent(e.target.value)}/>
-
       </div>
+      <input
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder="Type your message"
+      />
       <button onClick={handleSend}>Send</button>
     </div>
-  )
+  );
 };
+
+export default Chat;

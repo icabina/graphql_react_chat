@@ -3,4 +3,6 @@ node index.js
 
 
 #RUN CLIENT:
+
+npx vite --host=0.0.0.0 --open
 npm run dev
