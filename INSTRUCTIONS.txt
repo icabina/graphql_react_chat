@@ -1,0 +1,6 @@
+# RUN SERVER: If you're inside the server folder or root
+node index.js
+
+
+#RUN CLIENT:
+npm run dev
