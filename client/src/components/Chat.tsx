@@ -29,35 +29,54 @@ const MESSAGE_ADDED = gql`
   }
 `;
 
-//-----------------------------------------------------------
 const Chat = () => {
-  const { data } = useQuery(GET_MESSAGES);
+  const { data, loading, error } = useQuery(GET_MESSAGES);
   const [sendMessage] = useMutation(SEND_MESSAGE);
-  const { data: subData } = useSubscription(MESSAGE_ADDED);
+  const { data: subData, error: subError } = useSubscription(MESSAGE_ADDED);
   const [content, setContent] = useState("");
   const [messages, setMessages] = useState<{ id: string; content: string }[]>(
     [],
   );
 
-  // Load initial messages once
+  // Load initial messages
   useEffect(() => {
     if (data?.messages) {
       setMessages(data.messages);
     }
   }, [data]);
 
-  // When a new message is received via subscription
+  // Handle subscription updates
   useEffect(() => {
     if (subData?.messageAdded) {
-      setMessages((prev) => [...prev, subData.messageAdded]);
+      setMessages((prev) => {
+        // Prevent duplicate messages
+        if (prev.some((msg) => msg.id === subData.messageAdded.id)) {
+          return prev;
+        }
+        return [...prev, subData.messageAdded];
+      });
     }
   }, [subData]);
 
+  // Log subscription errors
+  useEffect(() => {
+    if (subError) {
+      console.error("Subscription error:", subError);
+    }
+  }, [subError]);
+
   const handleSend = async () => {
     if (!content.trim()) return;
-    await sendMessage({ variables: { content } });
-    setContent("");
+    try {
+      await sendMessage({ variables: { content } });
+      setContent("");
+    } catch (err) {
+      console.error("Mutation error:", err);
+    }
   };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   return (
     <div style={{ padding: "1rem" }}>

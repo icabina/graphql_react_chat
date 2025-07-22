@@ -49,10 +49,7 @@ const resolvers = {
   },
   Subscription: {
     messageAdded: {
-      subscribe: (_, __, { pubsub }) => {
-        console.log("Someone subscribed!");
-        pubsub.asyncIterator(MESSAGE_ADDED);
-      },
+      subscribe: () => pubsub.asyncIterator([MESSAGE_ADDED]),
     },
   },
 };
@@ -67,21 +64,29 @@ const wsServer = new WebSocketServer({
   server: httpServer,
   path: "/graphql",
 });
+
 useServer(
   {
     schema,
     execute,
     subscribe,
     context: async (ctx, msg, args) => {
-      console.log("WebSocket context connected");
+      console.log("WebSocket context:", { ctx, msg });
       return { pubsub };
     },
     onConnect: (ctx) => {
-      console.log("Client connected to WebSocket");
+      console.log("Client connected to WebSocket:", ctx.connectionParams);
     },
     onSubscribe: (ctx, msg) => {
-      console.log("Client subscribed to", msg.payload.query);
+      console.log("Client subscribed:", msg.payload.query);
     },
+    onDisconnect: () => {
+      console.log("Client disconnected from WebSocket");
+    },
+    onClose: () => {
+      console.log("WebSocket connection closed");
+    },
+    keepAlive: 10000, // Send keep-alive ping every 10 seconds
   },
   wsServer,
 );
