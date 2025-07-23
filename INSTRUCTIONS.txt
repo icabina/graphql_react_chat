@@ -6,3 +6,8 @@ node index.js
 
 npx vite --host=0.0.0.0 --open
 npm run dev
+
+
+
+npm cache clean --force
+npm install

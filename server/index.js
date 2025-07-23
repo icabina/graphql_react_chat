@@ -33,6 +33,11 @@ const typeDefs = gql`
 
 const messages = [];
 const pubsub = new PubSub();
+console.log("PubSub instance:", pubsub);
+console.log(
+  "PubSub has asyncIterator:",
+  typeof pubsub.asyncIterator === "function",
+);
 const MESSAGE_ADDED = "MESSAGE_ADDED";
 
 const resolvers = {
@@ -49,7 +54,10 @@ const resolvers = {
   },
   Subscription: {
     messageAdded: {
-      subscribe: () => pubsub.asyncIterator([MESSAGE_ADDED]),
+      subscribe: () => {
+        console.log("Subscribing to MESSAGE_ADDED");
+        return pubsub.asyncIterator([MESSAGE_ADDED]);
+      },
     },
   },
 };
@@ -97,7 +105,7 @@ await apolloServer.start();
 
 app.use("/graphql", cors(), bodyParser.json(), expressMiddleware(apolloServer));
 
-httpServer.listen(4000, () => {
+httpServer.listen(4000, "127.0.0.1", () => {
   console.log("🚀 Query endpoint: http://localhost:4000/graphql");
   console.log("🚀 Subscriptions endpoint: ws://localhost:4000/graphql");
 });
