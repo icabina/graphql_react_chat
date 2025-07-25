@@ -29,14 +29,44 @@ const MESSAGE_ADDED = gql`
   }
 `;
 
+type Message = { id: string; content: string };
+type MessagesQueryResult = { messages: Message[] };
+
 const Chat = () => {
-  const { data, loading, error } = useQuery(GET_MESSAGES);
-  const [sendMessage] = useMutation(SEND_MESSAGE);
-  const { data: subData, error: subError } = useSubscription(MESSAGE_ADDED);
   const [content, setContent] = useState("");
   const [messages, setMessages] = useState<{ id: string; content: string }[]>(
     [],
   );
+
+  const { data, loading, error } = useQuery(GET_MESSAGES);
+  // const [sendMessage] = useMutation(SEND_MESSAGE);
+
+  const [sendMessage] = useMutation(SEND_MESSAGE, {
+    optimisticResponse: {
+      sendMessage: {
+        __typename: "Message",
+        id: Date.now().toString(), // temp ID
+        content,
+      },
+    },
+    update: (cache, { data: { sendMessage } }) => {
+      const existing = cache.readQuery<MessagesQueryResult>({
+        query: GET_MESSAGES,
+      });
+
+      if (!existing) return;
+      if (existing?.messages.some((m) => m.id === sendMessage.id)) return;
+
+      cache.writeQuery({
+        query: GET_MESSAGES,
+        data: {
+          messages: [...existing.messages, sendMessage],
+        },
+      });
+    },
+  });
+
+  const { data: subData, error: subError } = useSubscription(MESSAGE_ADDED);
 
   // Load initial messages
   useEffect(() => {

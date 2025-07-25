@@ -33,11 +33,6 @@ const typeDefs = gql`
 
 const messages = [];
 const pubsub = new PubSub();
-console.log("PubSub instance:", pubsub);
-console.log(
-  "PubSub has asyncIterator:",
-  typeof pubsub.asyncIterator === "function",
-);
 const MESSAGE_ADDED = "MESSAGE_ADDED";
 
 const resolvers = {
@@ -55,7 +50,7 @@ const resolvers = {
   Subscription: {
     messageAdded: {
       subscribe: () => {
-        console.log("Subscribing to MESSAGE_ADDED");
+        // console.log("Subscribing to MESSAGE_ADDED");
         return pubsub.asyncIterator([MESSAGE_ADDED]);
       },
     },
@@ -73,6 +68,7 @@ const wsServer = new WebSocketServer({
   path: "/graphql",
 });
 
+// To activate the subscription listening
 useServer(
   {
     schema,
@@ -99,6 +95,7 @@ useServer(
   wsServer,
 );
 
+// To handle queries and mutations
 const apolloServer = new ApolloServer({ schema });
 
 await apolloServer.start();
