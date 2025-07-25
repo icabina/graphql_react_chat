@@ -41,14 +41,16 @@ const Chat = () => {
   const { data, loading, error } = useQuery(GET_MESSAGES);
   // const [sendMessage] = useMutation(SEND_MESSAGE);
 
+  // If you want to rely on Apollo's cache instead of maintaining messages
+  // in local state, you can let the cache auto-update with:
   const [sendMessage] = useMutation(SEND_MESSAGE, {
-    optimisticResponse: {
+    optimisticResponse: (variables) => ({
       sendMessage: {
         __typename: "Message",
-        id: Date.now().toString(), // temp ID
-        content,
+        id: Date.now().toString(),
+        content: variables.content,
       },
-    },
+    }),
     update: (cache, { data: { sendMessage } }) => {
       const existing = cache.readQuery<MessagesQueryResult>({
         query: GET_MESSAGES,
