@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useSubscription } from "@apollo/client";
 import { gql } from "@apollo/client";
+import { v4 as uuidv4 } from "uuid";
 
 const SEND_MESSAGE = gql`
   mutation SendMessage($content: String!) {
@@ -33,24 +34,24 @@ type Message = { id: string; content: string };
 type MessagesQueryResult = { messages: Message[] };
 
 const Chat = () => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [content, setContent] = useState("");
-  const [messages, setMessages] = useState<{ id: string; content: string }[]>(
-    [],
-  );
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const { data, loading, error } = useQuery(GET_MESSAGES);
-  // const [sendMessage] = useMutation(SEND_MESSAGE);
 
   // If you want to rely on Apollo's cache instead of maintaining messages
   // in local state, you can let the cache auto-update with:
   const [sendMessage] = useMutation(SEND_MESSAGE, {
-    optimisticResponse: (variables) => ({
+    optimisticResponse: (variables: { content: string }) => ({
       sendMessage: {
         __typename: "Message",
-        id: Date.now().toString(),
+        id: uuidv4(),
+        //id: Date.now().toString(),
         content: variables.content,
       },
     }),
+    //instance of inMemoryCache, and result of mutation
     update: (cache, { data: { sendMessage } }) => {
       const existing = cache.readQuery<MessagesQueryResult>({
         query: GET_MESSAGES,
@@ -69,6 +70,11 @@ const Chat = () => {
   });
 
   const { data: subData, error: subError } = useSubscription(MESSAGE_ADDED);
+
+  //scroll to bottom of messages to newest
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   // Load initial messages
   useEffect(() => {
@@ -123,15 +129,29 @@ const Chat = () => {
         {messages.map((msg) => (
           <div key={msg.id}>{msg.content}</div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
-      <input
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="Type your message"
-      />
-      <button onClick={handleSend}>Send</button>
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSend();
+        }}
+      >
+        <input
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Type your message"
+        />
+        <button type="submit">Send</button>
+      </form>
     </div>
   );
 };
 
 export default Chat;
+
+/*
+Debounce duplicate checks (optional)
+The check for duplicate messages in both the mutation update and the subscription is good, but in high-frequency environments (like chat rooms), consider using a Set or Map to track existing IDs for O(1) lookup. This is a micro-optimization.
+*/
