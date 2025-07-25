@@ -42,32 +42,35 @@ const Chat = () => {
 
   // If you want to rely on Apollo's cache instead of maintaining messages
   // in local state, you can let the cache auto-update with:
-  const [sendMessage] = useMutation(SEND_MESSAGE, {
-    optimisticResponse: (variables: { content: string }) => ({
-      sendMessage: {
-        __typename: "Message",
-        id: uuidv4(),
-        //id: Date.now().toString(),
-        content: variables.content,
-      },
-    }),
-    //instance of inMemoryCache, and result of mutation
-    update: (cache, { data: { sendMessage } }) => {
-      const existing = cache.readQuery<MessagesQueryResult>({
-        query: GET_MESSAGES,
-      });
-
-      if (!existing) return;
-      if (existing?.messages.some((m) => m.id === sendMessage.id)) return;
-
-      cache.writeQuery({
-        query: GET_MESSAGES,
-        data: {
-          messages: [...existing.messages, sendMessage],
+  const [sendMessage, { data, loading, error, client, called }] = useMutation(
+    SEND_MESSAGE,
+    {
+      optimisticResponse: (variables: { content: string }) => ({
+        sendMessage: {
+          __typename: "Message",
+          id: uuidv4(),
+          //id: Date.now().toString(),
+          content: variables.content,
         },
-      });
+      }),
+      //instance of inMemoryCache, and result of mutation
+      update: (cache, { data: { sendMessage } }) => {
+        const existing = cache.readQuery<MessagesQueryResult>({
+          query: GET_MESSAGES,
+        });
+
+        if (!existing) return;
+        if (existing?.messages.some((m) => m.id === sendMessage.id)) return;
+
+        cache.writeQuery({
+          query: GET_MESSAGES,
+          data: {
+            messages: [...existing.messages, sendMessage],
+          },
+        });
+      },
     },
-  });
+  );
 
   const { data: subData, error: subError } = useSubscription(MESSAGE_ADDED);
 
