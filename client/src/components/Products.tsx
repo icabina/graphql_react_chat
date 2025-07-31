@@ -49,36 +49,45 @@ export default function Products() {
       ? products
       : products.filter((p) => p.category === category);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <div className="container flex">
+        <div className="content">
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
 
   return (
-    <div className="products">
-      <h1 style={{ color: "#000" }}>Fake store products</h1>
-      <div className="row">
-        <select
-          value={category}
-          onChange={handleCategoryChange}
-          style={{ width: "300px" }}
-        >
-          <option value="all">All</option>
-          {categories.map((c: string) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
+    <div className="container">
+      <div className="content products">
+        <h1 style={{ color: "#000" }}>Fake store products</h1>
+        <div className="row">
+          <select
+            value={category}
+            onChange={handleCategoryChange}
+            style={{ width: "300px" }}
+          >
+            <option value="all">All</option>
+            {categories.map((c: string) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+          <button onClick={handleSort}>Sort</button>
+        </div>
+        <ul>
+          {sortedProducts.map((p) => (
+            <li key={p.id} style={{}}>
+              <img src={p.image} width="100" />
+              <h4>{p.title}</h4>
+              <p>${p.price}</p>
+              <p>{p.category}</p>
+            </li>
           ))}
-        </select>
-        <button onClick={handleSort}>Sort</button>
+        </ul>
       </div>
-      <ul>
-        {sortedProducts.map((p) => (
-          <li key={p.id} style={{}}>
-            <img src={p.image} width="100" />
-            <h4>{p.title}</h4>
-            <p>${p.price}</p>
-            <p>{p.category}</p>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

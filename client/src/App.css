@@ -56,9 +56,9 @@ main {
 nav {
   width: 100%;
   display: flex;
-  padding: 10px;
+  padding: 10px 10px 0 10px;
+  height: 40px;
   background-color: #ddd;
-  margin-bottom: 25px;
 }
 nav ul {
   list-style-type: none;
@@ -80,11 +80,23 @@ nav ul li a.active {
 nav ul li a:hover {
   color: #666;
 }
-#home {
+.container {
+  display: inline-block;
+  width: 100%;
+  height: calc(100vh - 60px);
+  padding-top: 20px;
+}
+.flex {
   display: flex;
   height: 100%;
   align-items: center;
   justify-content: center;
+}
+.content {
+  width: 100%;
+  max-width: 1080px;
+  padding: 0 15px;
+  display: inline-block;
 }
 .products {
   padding: 20px;
@@ -101,7 +113,8 @@ nav ul li a:hover {
 .products ul li {
   flex: 0 0 calc(33.333% - 1rem); /* 3 per row, minus gap compensation */
   box-sizing: border-box;
-  height: 200px;
+  height: 280px;
+  margin: 0 0 20px 0;
 }
 .products h1 {
   margin-bottom: 20px;

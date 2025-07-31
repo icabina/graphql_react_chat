@@ -2,6 +2,7 @@ import { Routes, Route, NavLink, useNavigate } from "react-router-dom";
 import Home from "./components/Home";
 import Graphql from "./components/Graphql";
 import Products from "./components/Products";
+import RHF from "./components/RHF";
 import "./App.css";
 
 function App() {
@@ -18,22 +19,28 @@ function App() {
             <button onClick={() => navigate("/")}>Home</button>
           </li>
           <li>
+            <NavLink to="/products" className={getActiveClass}>
+              Products
+            </NavLink>
+          </li>
+          <li>
             {/* Use Link for general links */}
             <NavLink to="/graphql" className={getActiveClass}>
               GraphQL
             </NavLink>
           </li>
           <li>
-            <NavLink to="/products" className={getActiveClass}>
-              Products
+            <NavLink to="/rhf" className={getActiveClass}>
+              RHF
             </NavLink>
           </li>
         </ul>
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/graphql" element={<Graphql />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/graphql" element={<Graphql />} />
+        <Route path="/rhf" element={<RHF />} />
       </Routes>
     </main>
   );

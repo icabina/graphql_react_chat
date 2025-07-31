@@ -113,38 +113,56 @@ const Graphql = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (loading)
+    return (
+      <div className="container flex">
+        <div className="content">
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="container flex">
+        <div className="content">
+          <p>Error: {error.message}</p>
+        </div>
+      </div>
+    );
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <div
-        style={{
-          height: "300px",
-          overflowY: "auto",
-          border: "1px solid gray",
-          marginBottom: "1rem",
-        }}
-      >
-        {messages.map((msg) => (
-          <div key={msg.id}>{msg.content}</div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
+    <div className="container flex">
+      <div className="content">
+        <h1 style={{ marginBottom: "20px" }}>GraphQL Instant Messages</h1>
+        <div
+          style={{
+            height: "300px",
+            overflowY: "auto",
+            border: "1px solid gray",
+            marginBottom: "1rem",
+          }}
+        >
+          {messages.map((msg) => (
+            <div key={msg.id}>{msg.content}</div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSend();
-        }}
-      >
-        <input
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Type your message"
-        />
-        <button type="submit">Send</button>
-      </form>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend();
+          }}
+        >
+          <input
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Type your message"
+          />
+          <button type="submit">Send</button>
+        </form>
+      </div>
     </div>
   );
 };
