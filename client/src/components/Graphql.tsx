@@ -33,7 +33,7 @@ const MESSAGE_ADDED = gql`
 type Message = { id: string; content: string };
 type MessagesQueryResult = { messages: Message[] };
 
-const Chat = () => {
+const Graphql = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [content, setContent] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -149,7 +149,7 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default Graphql;
 
 /*
 Debounce duplicate checks (optional)

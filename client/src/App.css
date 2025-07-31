@@ -1,8 +1,17 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
+}
+* {
+  margin: 0px;
+  padding: 0px;
+  border-collapse: collapse;
+  font-weight: normal;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .logo {
@@ -39,4 +48,68 @@
 
 .read-the-docs {
   color: #888;
+}
+main {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+nav {
+  width: 100%;
+  display: flex;
+  padding: 10px;
+  background-color: #ddd;
+  margin-bottom: 25px;
+}
+nav ul {
+  list-style-type: none;
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0 1rem;
+}
+nav ul li {
+  flex: 0 0 auto;
+}
+nav ul li a {
+  color: #000;
+  text-decoration: none;
+}
+nav ul li a.active {
+  color: blue;
+}
+nav ul li a:hover {
+  color: #666;
+}
+#home {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.products {
+  padding: 20px;
+}
+.products ul {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  gap: 1rem; /* Optional spacing between items */
+}
+
+.products ul li {
+  flex: 0 0 calc(33.333% - 1rem); /* 3 per row, minus gap compensation */
+  box-sizing: border-box;
+  height: 200px;
+}
+.products h1 {
+  margin-bottom: 20px;
+}
+.products .row {
+  margin-bottom: 20px;
+}
+.products select {
+  margin: 0 10px;
 }
