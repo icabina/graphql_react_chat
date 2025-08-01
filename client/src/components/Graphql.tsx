@@ -155,12 +155,17 @@ const Graphql = () => {
             handleSend();
           }}
         >
-          <input
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Type your message"
-          />
-          <button type="submit">Send</button>
+          <div>
+            <input
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Type your message"
+              type="text"
+            />
+          </div>
+          <div>
+            <button type="submit">Send</button>
+          </div>
         </form>
       </div>
     </div>
