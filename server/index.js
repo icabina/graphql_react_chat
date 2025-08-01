@@ -74,6 +74,7 @@ useServer(
     schema,
     execute,
     subscribe,
+    /*
     context: async (ctx, msg, args) => {
       console.log("WebSocket context:", { ctx, msg });
       return { pubsub };
@@ -91,6 +92,7 @@ useServer(
       console.log("WebSocket connection closed");
     },
     keepAlive: 10000, // Send keep-alive ping every 10 seconds
+    */
   },
   wsServer,
 );
