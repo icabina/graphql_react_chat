@@ -8,6 +8,8 @@ import "./App.css";
 function App() {
   const navigate = useNavigate();
 
+  // React Router calls this function with an object like:
+  // { isActive: boolean, isPending: boolean, isTransitioning: boolean }
   const getActiveClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "active" : "";
 
