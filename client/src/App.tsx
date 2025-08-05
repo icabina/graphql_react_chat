@@ -3,6 +3,8 @@ import Home from "./components/Home";
 import Graphql from "./components/Graphql";
 import Products from "./components/Products";
 import RHF from "./components/RHF";
+import Animation from "./components/Animation";
+import DraggablePage from "./components/DraggablePage";
 import "./App.css";
 
 function App() {
@@ -36,6 +38,17 @@ function App() {
               RHF
             </NavLink>
           </li>
+          <li>
+            <NavLink to="/animation" className={getActiveClass}>
+              Animation
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/draggable" className={getActiveClass}>
+              Drag & Drop
+            </NavLink>
+          </li>
         </ul>
       </nav>
       <Routes>
@@ -43,6 +56,8 @@ function App() {
         <Route path="/products" element={<Products />} />
         <Route path="/graphql" element={<Graphql />} />
         <Route path="/rhf" element={<RHF />} />
+        <Route path="/animation" element={<Animation />} />
+        <Route path="/draggable" element={<DraggablePage />} />
       </Routes>
     </main>
   );

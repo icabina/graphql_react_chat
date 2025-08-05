@@ -14,6 +14,8 @@
     "@apollo/server": "^4.12.2",
     "@graphql-tools/schema": "^10.0.23",
     "@hookform/resolvers": "^5.2.1",
+    "@react-three/drei": "^10.6.1",
+    "@react-three/fiber": "^9.3.0",
     "apollo-link-rest": "^0.9.0",
     "apollo-server": "^3.13.0",
     "body-parser": "^2.2.0",
@@ -28,19 +30,20 @@
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.61.1",
     "react-router-dom": "^7.7.1",
+    "three": "^0.179.1",
     "ws": "^8.18.2",
     "zod": "^4.0.14"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
-    "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^4.4.1",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
-    "typescript": "~5.8.3",
+    "typescript": "^5.9.2",
     "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5"
   }
